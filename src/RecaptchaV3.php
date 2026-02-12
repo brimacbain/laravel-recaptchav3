@@ -105,20 +105,20 @@ class RecaptchaV3
     /**
      * @return string
      */
-    public function initJs()
+    public function initJs($cspNonce = false)
     {
-        return '<script src="' . $this->origin . '/api.js?hl=' . $this->locale . '&render=' . $this->sitekey . '"></script>';
+        return '<script src="' . $this->origin . '/api.js?hl=' . $this->locale . '&render=' . $this->sitekey . '"'.(!empty($cspNonce) ? ' nonce="'.$cspNonce.'"' : '' ).'></script>';
     }
 
 
     /**
      * @param $action
      */
-    public function field($action, $name = 'g-recaptcha-response', $cspEnable = false)
+    public function field($action, $name = 'g-recaptcha-response', $cspNonce = false)
     {
         $fieldId = uniqid($name . '-', false);
         $html = '<input type="hidden" name="' . $name . '" id="' . $fieldId . '">';
-        $html .= "<script ". (!empty($cspEnable) ? 'nonce="'.$cspEnable.'"' : '' ) .">
+        $html .= "<script ". (!empty($cspNonce) ? 'nonce="'.$cspNonce.'"' : '' ) .">
   grecaptcha.ready(function() {
       grecaptcha.execute('" . $this->sitekey . "', {action: '" . $action . "'}).then(function(token) {
          document.getElementById('" . $fieldId . "').value = token;
